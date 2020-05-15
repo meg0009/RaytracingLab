@@ -1,0 +1,16 @@
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\bin\Debug\RaytracingLabV2.exe.config
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\bin\Debug\RaytracingLabV2.exe
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\bin\Debug\RaytracingLabV2.pdb
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\bin\Debug\OpenTK.dll
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\bin\Debug\OpenTK.GLControl.dll
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\bin\Debug\OpenTK.pdb
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\bin\Debug\OpenTK.xml
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\bin\Debug\OpenTK.dll.config
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\bin\Debug\OpenTK.GLControl.xml
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\obj\Debug\RaytracingLabV2.csprojAssemblyReference.cache
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\obj\Debug\RaytracingLabV2.Form1.resources
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\obj\Debug\RaytracingLabV2.Properties.Resources.resources
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\obj\Debug\RaytracingLabV2.csproj.GenerateResource.cache
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\obj\Debug\RaytracingLabV2.csproj.CopyComplete
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\obj\Debug\RaytracingLabV2.exe
+D:\Programming\компьютерная графика\RaytracingLabV2\RaytracingLabV2\obj\Debug\RaytracingLabV2.pdb
