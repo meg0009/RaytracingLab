@@ -35,6 +35,15 @@ struct STriangle{
 	int MaterialIdx;
 };
 
+struct SCube{
+	vec3 Center;
+	float Side;
+	int MaterialIdx;
+	float ax;
+	float ay;
+	float az;
+};
+
 struct SIntersection{
 	float Time;
 	vec3 Point;
@@ -64,12 +73,14 @@ struct STracingRay{
 	int depth;
 };
 
+const int countCubes = 2;
 const int countSpheres = 2;
 const int countTriangles = 12;
 const int countMaterials = 7;
 const int sizeStack = 10;
 int countRay = 0;
 
+SCube cubes[countCubes];
 STriangle triangles[countTriangles];
 SSphere spheres[countSpheres];
 SCamera uCamera;
@@ -193,12 +204,12 @@ void initializeDefaultScene(out STriangle triangles[countTriangles], out SSphere
 	triangles[8].v1 = vec3(-5, 5, -8);
 	triangles[8].v2 = vec3(5, 5, -8);
 	triangles[8].v3 = vec3(-5, 5, 8);
-	triangles[8].MaterialIdx = 4;
+	triangles[8].MaterialIdx = 3;
 
 	triangles[9].v1 = vec3(5, 5, -8);
 	triangles[9].v2 = vec3(5, 5, 8);
 	triangles[9].v3 = vec3(-5, 5, 8);
-	triangles[9].MaterialIdx = 4;
+	triangles[9].MaterialIdx = 3;
 
 	// front wall
 	triangles[10].v1 = vec3(-5, -5, -8);
@@ -219,6 +230,21 @@ void initializeDefaultScene(out STriangle triangles[countTriangles], out SSphere
 	spheres[1].Center = vec3(2, 1, 2);
 	spheres[1].Radius = 1.0;
 	spheres[1].MaterialIdx = 6;
+
+	// Cubes
+	cubes[0].Center = vec3(2, -4, -1);
+	cubes[0].Side = 2.0;
+	cubes[0].MaterialIdx = 4;
+	cubes[0].ax = 0;
+	cubes[0].ay = 1;
+	cubes[0].az = 0;
+
+	cubes[1].Center = vec3(-1, -4.5, -1.8);
+	cubes[1].Side = 1;
+	cubes[1].MaterialIdx = 4;
+	cubes[1].ax = 0;
+	cubes[1].ay = 0;
+	cubes[1].az = 1.5;
 }
 
 SRay GenerateRay(SCamera uCamera){
@@ -233,6 +259,150 @@ void initializeDefaultCamera(){
 	uCamera.Up = vec3(0, 1, 0);
 	uCamera.Side = vec3(1, 0, 0);
 	uCamera.Scale = vec2(1);
+}
+
+bool IntersectTriangle(SRay ray, vec3 v1, vec3 v2, vec3 v3, out float time);
+
+bool IntersectCube(SCube cube, SRay ray, float start, float final, out float time){
+	time = -1;
+	mat3 rotX = mat3(
+		1, 0, 0,
+		0, cos(cube.ax), -sin(cube.ax),
+		0, sin(cube.ax), cos(cube.ax)
+	);
+	mat3 rotY = mat3(
+		cos(cube.ay), 0, sin(cube.ay),
+		0, 1, 0,
+		-sin(cube.ay), 0, cos(cube.ay)
+	);
+	mat3 rotZ = mat3(
+		cos(cube.az), -sin(cube.az), 0,
+		sin(cube.az), cos(cube.az), 0,
+		0, 0, 1
+	);
+	vec3 a[8];
+	vec3 tmp = vec3(-cube.Side / 2.0, -cube.Side / 2.0, -cube.Side / 2.0);
+	tmp = rotX * tmp;
+	tmp = rotY * tmp;
+	tmp = rotZ * tmp;
+	a[0] = tmp + cube.Center;
+
+	tmp = vec3(cube.Side / 2.0, -cube.Side / 2.0, -cube.Side / 2.0);
+	tmp = rotX * tmp;
+	tmp = rotY * tmp;
+	tmp = rotZ * tmp;
+	a[1] = tmp + cube.Center;
+
+	tmp = vec3(cube.Side / 2.0, cube.Side / 2.0, -cube.Side / 2.0);
+	tmp = rotX * tmp;
+	tmp = rotY * tmp;
+	tmp = rotZ * tmp;
+	a[2] = tmp + cube.Center;
+
+	tmp = vec3(-cube.Side / 2.0, cube.Side / 2.0, -cube.Side / 2.0);
+	tmp = rotX * tmp;
+	tmp = rotY * tmp;
+	tmp = rotZ * tmp;
+	a[3] = tmp + cube.Center;
+
+	tmp = vec3(-cube.Side / 2.0, -cube.Side / 2.0, cube.Side / 2.0);
+	tmp = rotX * tmp;
+	tmp = rotY * tmp;
+	tmp = rotZ * tmp;
+	a[4] = tmp + cube.Center;
+
+	tmp = vec3(cube.Side / 2.0, -cube.Side / 2.0, cube.Side / 2.0);
+	tmp = rotX * tmp;
+	tmp = rotY * tmp;
+	tmp = rotZ * tmp;
+	a[5] = tmp + cube.Center;
+
+	tmp = vec3(cube.Side / 2.0, cube.Side / 2.0, cube.Side / 2.0);
+	tmp = rotX * tmp;
+	tmp = rotY * tmp;
+	tmp = rotZ * tmp;
+	a[6] = tmp + cube.Center;
+
+	tmp = vec3(-cube.Side / 2.0, cube.Side / 2.0, cube.Side / 2.0);
+	tmp = rotX * tmp;
+	tmp = rotY * tmp;
+	tmp = rotZ * tmp;
+	a[7] = tmp + cube.Center;
+
+	STriangle tris[12];
+	// front
+	tris[0].v1 = a[0];
+	tris[0].v2 = a[1];
+	tris[0].v3 = a[3];
+
+	tris[1].v1 = a[1];
+	tris[1].v2 = a[2];
+	tris[1].v3 = a[3];
+	//back
+	tris[2].v1 = a[4];
+	tris[2].v2 = a[5];
+	tris[2].v3 = a[7];
+
+	tris[3].v1 = a[5];
+	tris[3].v2 = a[6];
+	tris[3].v3 = a[7];
+	//left
+	tris[4].v1 = a[0];
+	tris[4].v2 = a[4];
+	tris[4].v3 = a[3];
+
+	tris[5].v1 = a[4];
+	tris[5].v2 = a[7];
+	tris[5].v3 = a[3];
+	//right
+	tris[6].v1 = a[1];
+	tris[6].v2 = a[5];
+	tris[6].v3 = a[2];
+
+	tris[7].v1 = a[5];
+	tris[7].v2 = a[6];
+	tris[7].v3 = a[2];
+	//bottom
+	tris[8].v1 = a[0];
+	tris[8].v2 = a[1];
+	tris[8].v3 = a[4];
+
+	tris[9].v1 = a[1];
+	tris[9].v2 = a[5];
+	tris[9].v3 = a[4];
+	//top
+	tris[10].v1 = a[3];
+	tris[10].v2 = a[2];
+	tris[10].v3 = a[7];
+
+	tris[11].v1 = a[2];
+	tris[11].v2 = a[6];
+	tris[11].v3 = a[7];
+
+	float t[12];
+	bool f[12];
+	for(int i = 0; i < 12; i++){
+		f[i] = IntersectTriangle(ray, tris[i].v1, tris[i].v2, tris[i].v3, t[i]);
+	}
+	float tmax = t[0];
+	int imax = 0;
+	for(int i = 1; i < 12; i++){
+		if(!f[imax] && f[i]){
+			tmax = t[i];
+			imax = i;
+		}
+		else if(f[imax] && f[i]){
+			if(tmax > t[i]){
+				tmax = t[i];
+				imax = i;
+			}
+		}
+	}
+	if(f[imax]){
+		time = t[imax];
+		return true;
+	}
+	return false;
 }
 
 bool IntersectSphere(SSphere sphere, SRay ray, float start, float final, out float time){
@@ -282,6 +452,7 @@ bool IntersectTriangle(SRay ray, vec3 v1, vec3 v2, vec3 v3, out float time){
 	}
 	vec3 edge2 = v3 - v2;
 	vec3 VP2 = P - v2;
+	C = cross(edge2, VP2);
 	if(dot(N, C) < 0){
 		return false;
 	}
@@ -327,6 +498,22 @@ bool Raytrace(SRay ray,	float start, float final, inout SIntersection intersect)
 			intersect.ReflectionCoef = materials[triangle.MaterialIdx].ReflectionCoef;
 			intersect.RefractionCoef = materials[triangle.MaterialIdx].RefractionCoef;
 			intersect.MaterialType = materials[triangle.MaterialIdx].MaterialType;
+			result = true;
+		}
+	}
+	//calculate cubes
+	for(int i = 0; i < countCubes; i++){
+		SCube cube = cubes[i];
+		if(IntersectCube(cube, ray, start, final, test) && test < intersect.Time){
+			intersect.Time = test;
+			intersect.Point = ray.Origin + ray.Direction * test;
+			//посмотреть
+			intersect.Normal = normalize(intersect.Point - cube.Center);
+			intersect.Color = materials[cube.MaterialIdx].Color;
+			intersect.LightCoeffs = materials[cube.MaterialIdx].LightCoeffs;
+			intersect.ReflectionCoef = materials[cube.MaterialIdx].ReflectionCoef;
+			intersect.RefractionCoef = materials[cube.MaterialIdx].RefractionCoef;
+			intersect.MaterialType = materials[cube.MaterialIdx].MaterialType;
 			result = true;
 		}
 	}
