@@ -76,14 +76,14 @@ struct STracingRay{
 const int countCubes = 2;
 const int countSpheres = 2;
 const int countTriangles = 12;
-const int countMaterials = 7;
+const int countMaterials = 9;
 const int sizeStack = 10;
 int countRay = 0;
 uniform int maxDepth;
 
-SCube cubes[countCubes];
-STriangle triangles[countTriangles];
-SSphere spheres[countSpheres];
+uniform SCube cubes[countCubes];
+uniform STriangle triangles[countTriangles];
+uniform SSphere spheres[countSpheres];
 SCamera uCamera;
 SLight uLight;
 uniform SMaterial materials[countMaterials];
@@ -155,7 +155,7 @@ bool isEmpty(){
 	materials[6].MaterialType = REFRACTION;
 }*/
 
-void initializeDefaultScene(out STriangle triangles[countTriangles], out SSphere spheres[countSpheres]){
+/*void initializeDefaultScene(out STriangle triangles[countTriangles], out SSphere spheres[countSpheres]){
 	// Triangles
 	// left wall
 	triangles[0].v1 = vec3(-5, -5, -8);
@@ -246,7 +246,7 @@ void initializeDefaultScene(out STriangle triangles[countTriangles], out SSphere
 	cubes[1].ax = 0;
 	cubes[1].ay = 0;
 	cubes[1].az = 1.5;
-}
+}*/
 
 SRay GenerateRay(SCamera uCamera){
 	vec2 coords = glPosition.xy * uCamera.Scale;
@@ -552,7 +552,7 @@ void main() {
 	initializeDefaultCamera();
 	SRay ray = GenerateRay(uCamera);
 	vec3 resultColor = vec3(0, 0, 0);
-	initializeDefaultScene(triangles, spheres);
+	//initializeDefaultScene(triangles, spheres);
 	//initializeDefaultLightMaterials(uLight, materials);
 	uLight.Position = vec3(4, 4, -7.5);
 	STracingRay trRay = STracingRay(ray, 1, 0);

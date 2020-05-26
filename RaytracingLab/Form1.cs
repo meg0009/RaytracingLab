@@ -28,6 +28,19 @@ namespace RaytracingLab {
             }
             listBox1.SelectedIndex = 0;
             textDepth.Text = Convert.ToString(view.maxDepth);
+            int T = view.Triangles.Length;
+            for(int i = 0; i < T; i++) {
+                listBox2.Items.Add("Триугольник " + i);
+            }
+            int S = view.Spheres.Length;
+            for(int i = 0; i < S; i++) {
+                listBox2.Items.Add("Сфера " + i);
+            }
+            int C = view.Cubes.Length;
+            for(int i =0; i < C; i++) {
+                listBox2.Items.Add("Куб " + i);
+            }
+            listBox2.SelectedIndex = 0;
         }
 
         private void Application_Idle(object sender, EventArgs e) {
@@ -43,8 +56,10 @@ namespace RaytracingLab {
         }
 
         private void Form1_Resize(object sender, EventArgs e) {
+            groupBox3.Height = Height - 63;
+            groupBox3.Location = new Point(Width - groupBox3.Width - 28, Height - groupBox3.Height - 51);
             groupBox2.Height = Height - 63;
-            groupBox2.Location = new Point(Width - groupBox2.Width - 28, Height - groupBox2.Height - 51);
+            groupBox2.Location = new Point(groupBox3.Location.X - groupBox2.Width - 6, Height - groupBox2.Height - 51);
             groupBox1.Height = Height - 63;
             groupBox1.Location = new Point(groupBox2.Location.X - groupBox1.Width - 6, Height - groupBox1.Height - 51);
             glControl1.Height = Height - 63;
@@ -76,6 +91,40 @@ namespace RaytracingLab {
 
         private void button2_Click(object sender, EventArgs e) {
             view.maxDepth = Convert.ToInt32(textDepth.Text);
+        }
+
+        private void listBox2_SelectedIndexChanged(object sender, EventArgs e) {
+            string str = (string)listBox2.SelectedItem;
+            string[] arr = str.Trim().Split();
+            int N = Convert.ToInt32(arr[1]);
+            switch (arr[0]) {
+                case "Триугольник":
+                    textBox1.Text = Convert.ToString(view.Triangles[N].MaterialIdx);
+                    break;
+                case "Сфера":
+                    textBox1.Text = Convert.ToString(view.Spheres[N].MaterialIdx);
+                    break;
+                case "Куб":
+                    textBox1.Text = Convert.ToString(view.Cubes[N].MaterialIdx);
+                    break;
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e) {
+            string str = (string)listBox2.SelectedItem;
+            string[] arr = str.Trim().Split();
+            int N = Convert.ToInt32(arr[1]);
+            switch (arr[0]) {
+                case "Триугольник":
+                    view.setTriangleMaterial(N, Convert.ToInt32(textBox1.Text));
+                    break;
+                case "Сфера":
+                    view.setSphereMaterial(N, Convert.ToInt32(textBox1.Text));
+                    break;
+                case "Куб":
+                    view.setCubeMaterial(N, Convert.ToInt32(textBox1.Text));
+                    break;
+            }
         }
     }
 }
